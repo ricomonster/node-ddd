@@ -1,0 +1,17 @@
+# Logs
+*.log
+
+# Node
+node_modules/
+
+# OS auto-generated files
+.DS_Store
+._*
+
+# Vim
+*~
+*.swp
+*.swo
+
+# IDE files
+.idea/
