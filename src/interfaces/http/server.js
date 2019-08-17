@@ -1,6 +1,6 @@
 const express = require('express');
 
-const Server = ({ router }) => {
+const Server = ({ logger, router }) => {
   const app = express();
 
   // this will remove the Powered by Express header thingy
@@ -19,7 +19,7 @@ const Server = ({ router }) => {
         const http = app.listen('3000', () => {
           const { port } = http.address();
 
-          console.log(`API Running at Port: ${port}`);
+          logger.info(`API Running at Port: ${port}`);
         });
       });
     },
