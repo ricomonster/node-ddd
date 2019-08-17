@@ -9,10 +9,13 @@
     "awilix": "^4.2.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^8.0.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
+    "pg": "^7.12.1",
+    "sequelize": "^5.15.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
