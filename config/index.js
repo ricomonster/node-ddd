@@ -19,8 +19,6 @@ const ENV = process.env.APP_ENV || 'development';
 // load up the database configuration
 const dbConfig = loadDatabaseConfig();
 
-console.log('db', dbConfig);
-
 // setup the config
 const config = Object.assign({
   env: ENV,

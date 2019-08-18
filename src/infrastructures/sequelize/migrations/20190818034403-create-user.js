@@ -15,7 +15,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       emailVerifiedAt: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
         field: 'email_verified_at',
       },
       password: {
