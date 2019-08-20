@@ -1,4 +1,4 @@
-const { createContainer, asValue, asFunction } = require('awilix');
+const { createContainer, asClass, asValue, asFunction } = require('awilix');
 
 // dependencies
 const app = require('./app');
@@ -7,6 +7,7 @@ const config = require('./../config');
 // infrastructures
 const database = require('./infrastructures/database');
 const logger = require('./infrastructures/logging/logger');
+const repository = require('./infrastructures/repositories');
 
 // interfaces
 const router = require('./interfaces/http/router');
@@ -14,6 +15,8 @@ const server = require('./interfaces/http/server');
 
 // instantiate the container
 const container = createContainer();
+
+console.log('cc', typeof repository);
 
 // build out the system
 container.register({
@@ -23,6 +26,7 @@ container.register({
   // infrastructures
   database: asFunction(database).singleton(),
   logger: asFunction(logger).singleton(),
+  repository: asValue(repository),
 
   // interfaces
   router: asFunction(router).singleton(),

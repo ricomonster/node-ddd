@@ -1,6 +1,8 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 
+const controller = require('./utils/create-controller-routes');
+
 const Router = ({}) => {
   const apiRouter = express.Router();
 
@@ -9,9 +11,7 @@ const Router = ({}) => {
 
   // START: API Routes
   // Example: apiRouter.use('/users', 'path of controller');
-  apiRouter.use('/', (req, res) => {
-    return res.send('Hello world');
-  });
+  apiRouter.use('/', require('./controllers/users'));
   // END: API Routes
 
   return apiRouter;
