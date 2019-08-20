@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 
 const SequelizeInfra = ({ config, basePath }) => {
   // instantiate sequelize
-  const sequelize = new Sequelize(config.db.host, { ...config });
+  const sequelize = new Sequelize({ ...config.db });
 
   // setup db
   const db = {
@@ -14,7 +14,13 @@ const SequelizeInfra = ({ config, basePath }) => {
     models: {},
   };
 
-  // TODO: get the models and associate it
+  // get the models and associate it
+  const dir = path.join(basePath, './models');
+  fs.readdirSync(dir).forEach(file => {
+    const modelDir = path.join(dir, file);
+    const model = sequelize.import(modelDir);
+    db.models[model.name] = model;
+  });
 
   return db;
 };

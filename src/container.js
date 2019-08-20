@@ -13,10 +13,23 @@ const repository = require('./infrastructures/repositories');
 const router = require('./interfaces/http/router');
 const server = require('./interfaces/http/server');
 
+const asArray = resolvers => {
+  return {
+    resolve: (container, opts) => resolvers.map(r => container.build(r, opts)),
+  };
+};
+
 // instantiate the container
 const container = createContainer();
 
-console.log('cc', typeof repository);
+// let registeredRepositories = [];
+
+// for (let r in repository) {
+//   registeredRepositories[r] = asFunction(repository[r][0], repository[r][1]);
+//   // registeredRepositories.push(r, asFunction(repository[r][0], repository[r][1]));
+// }
+
+// console.log('rr', registeredRepositories);
 
 // build out the system
 container.register({
@@ -26,7 +39,7 @@ container.register({
   // infrastructures
   database: asFunction(database).singleton(),
   logger: asFunction(logger).singleton(),
-  repository: asValue(repository),
+  // repository: asArray(registeredRepositories),
 
   // interfaces
   router: asFunction(router).singleton(),

@@ -3,15 +3,17 @@ const express = require('express');
 
 const controller = require('./utils/create-controller-routes');
 
-const Router = ({}) => {
+const Router = ({ database }) => {
   const apiRouter = express.Router();
+
+  // console.log('db', database);
 
   // router configuration
   apiRouter.use(bodyParser.json());
 
   // START: API Routes
   // Example: apiRouter.use('/users', 'path of controller');
-  apiRouter.use('/', require('./controllers/users'));
+  // apiRouter.use('/', require('./controllers/users'));
   // END: API Routes
 
   return apiRouter;
