@@ -3,12 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node cluster.js",
+    "start:dev": "cross-env NODE_PATH=. TZ=UTC nodemon"
   },
   "dependencies": {
-    "awilix": "^4.2.2",
+    "awilix": "2.12.0",
+    "awilix-express": "0.11.0",
     "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
+    "cross-env": "^5.2.0",
     "debug": "~2.6.9",
     "dotenv": "^8.0.0",
     "express": "~4.16.1",
@@ -16,7 +20,11 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "pg": "^7.12.1",
-    "sequelize": "^5.15.0",
+    "pm2": "^3.5.1",
+    "sequelize": "^5.15.2",
+    "serverless-cli": "^1.0.0",
+    "serverless-http": "^2.2.0",
+    "serverless-plugin-tracing": "^2.0.0",
     "structure": "^1.5.0",
     "winston": "^3.2.1"
   },
@@ -24,6 +32,16 @@
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.0.0",
-    "prettier": "^1.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "prettier": "^1.18.2",
+    "serverless-dotenv-plugin": "^2.1.1",
+    "serverless-offline": "^5.10.1",
+    "serverless-offline-scheduler": "^0.3.8",
+    "serverless-plugin-existing-s3": "^2.4.0",
+    "serverless-plugin-include-dependencies": "^3.2.1",
+    "serverless-s3-local": "^0.5.0"
   }
 }

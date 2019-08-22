@@ -1,4 +1,4 @@
-const User = require('../../domain/User');
+const User = require('src/domain/User');
 const BaseRepository = require('./BaseRepository');
 
 class UserRepository extends BaseRepository {

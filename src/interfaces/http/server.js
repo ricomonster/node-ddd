@@ -15,7 +15,7 @@ const Server = ({ logger, router }) => {
   return {
     app,
     start: () => {
-      new Promise(resolve => {
+      return new Promise(() => {
         const http = app.listen('3000', () => {
           const { port } = http.address();
 
