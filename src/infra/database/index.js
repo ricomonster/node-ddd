@@ -1,5 +1,5 @@
 // dependencies
-const sequelize = require('src/infrastructures/sequelize');
+const sequelize = require('src/infra/sequelize');
 
 const Database = ({ config, logger }) => {
   if (!config.db) {

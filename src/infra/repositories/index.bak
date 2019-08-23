@@ -5,7 +5,7 @@ const { Lifetime } = require('awilix');
 const repositories = {};
 
 // get the contents of the folder
-fs.readdirSync('src/infrastructures/repositories')
+fs.readdirSync('src/infra/repositories')
   .filter(file => {
     // do not include the index.js and the BaseRepository.js files
     return (

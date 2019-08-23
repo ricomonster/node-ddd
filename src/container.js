@@ -1,35 +1,20 @@
-const { createContainer, asClass, asValue, asFunction } = require('awilix');
+const { asClass, asValue, asFunction, createContainer, Lifetime, listModules } = require('awilix');
 
 // dependencies
 const app = require('./app');
 const config = require('./../config');
 
 // infrastructures
-const database = require('./infrastructures/database');
-const logger = require('./infrastructures/logging/logger');
-const repository = require('./infrastructures/repositories');
+const database = require('./infra/database');
+const logger = require('./infra/logging/logger');
+// const repository = require('./infra/repositories');
 
 // interfaces
 const router = require('./interfaces/http/router');
 const server = require('./interfaces/http/server');
 
-const asArray = resolvers => {
-  return {
-    resolve: (container, opts) => resolvers.map(r => container.build(r, opts)),
-  };
-};
-
 // instantiate the container
 const container = createContainer();
-
-// let registeredRepositories = [];
-
-// for (let r in repository) {
-//   registeredRepositories[r] = asFunction(repository[r][0], repository[r][1]);
-//   // registeredRepositories.push(r, asFunction(repository[r][0], repository[r][1]));
-// }
-
-// console.log('rr', registeredRepositories);
 
 // build out the system
 container.register({
@@ -39,11 +24,43 @@ container.register({
   // infrastructures
   database: asFunction(database).singleton(),
   logger: asFunction(logger).singleton(),
-  // repository: asArray(registeredRepositories),
 
   // interfaces
   router: asFunction(router).singleton(),
   server: asFunction(server).singleton(),
 });
+
+// load app modules
+// will load up the the contents of the following:
+// - app/*
+// - infra/repositories/*
+// - database/models
+container.loadModules(['app/**/*.js', 'infra/repositories/*!(BaseRepository).js'], {
+  formatName: 'camelCase',
+  resolverOptions: {
+    lifetime: Lifetime.SINGLETON,
+  },
+  cwd: __dirname,
+});
+
+// models
+container.loadModules(['infra/database/models/*.js'], {
+  formatName: (name, descriptor) => {
+    const splat = descriptor.path.split('/');
+    const namespace = splat[splat.length - 2];
+    const upperNamespace = namespace.charAt(0).toUpperCase() + namespace.substring(1);
+    const modelName = name.charAt(0).toUpperCase() + name.substring(1);
+
+    // so the format will be NameModel
+    return modelName + upperNamespace;
+  },
+  resolverOptions: {
+    lifetime: Lifetime.SINGLETON,
+  },
+  cwd: __dirname,
+});
+
+console.log(container.cradle.UserModels);
+// container.cradle.createUser.execute({});
 
 module.exports = container;
