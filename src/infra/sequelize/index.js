@@ -19,7 +19,7 @@ const SequelizeInfra = ({ config, basePath }) => {
   fs.readdirSync(dir).forEach(file => {
     const modelDir = path.join(dir, file);
     const model = sequelize.import(modelDir);
-    db.models[model.name] = model;
+    db.models[`${model.name}Model`] = model;
   });
 
   return db;
