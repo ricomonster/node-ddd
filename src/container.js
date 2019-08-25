@@ -1,7 +1,7 @@
-const { asClass, asValue, asFunction, createContainer, Lifetime, listModules } = require('awilix');
+const { asClass, asValue, asFunction, createContainer, Lifetime } = require('awilix');
 
 // dependencies
-const app = require('./app');
+const Application = require('./app/Application');
 const config = require('./../config');
 
 // infrastructures
@@ -11,14 +11,14 @@ const logger = require('./infra/logging/logger');
 
 // interfaces
 const router = require('./interfaces/http/router');
-const server = require('./interfaces/http/server');
+const Server = require('./interfaces/http/Server');
 
 // instantiate the container
 const container = createContainer();
 
 // build out the system
 container.register({
-  app: asFunction(app).singleton(),
+  app: asClass(Application).singleton(),
   config: asValue(config),
 
   // infrastructures
@@ -27,7 +27,7 @@ container.register({
 
   // interfaces
   router: asFunction(router).singleton(),
-  server: asFunction(server).singleton(),
+  server: asClass(Server).singleton(),
 });
 
 // load app modules
@@ -42,6 +42,6 @@ container.loadModules(['app/**/*.js', 'infra/repositories/*!(BaseRepository).js'
   cwd: __dirname,
 });
 
-container.cradle.createUser.execute({});
+// container.cradle.createUser.execute({});
 
 module.exports = container;

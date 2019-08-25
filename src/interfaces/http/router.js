@@ -1,22 +1,30 @@
+// dependencies
 const bodyParser = require('body-parser');
 const express = require('express');
+const statusMonitor = require('express-status-monitor');
 
 const controller = require('./utils/create-controller-routes');
 
-const Router = ({ database }) => {
-  const apiRouter = express.Router();
+const Router = ({ config }) => {
+  const router = express.Router();
 
-  // console.log('db', database);
+  // status monitor for development
+  if (config.env === 'development') {
+    router.use(statusMonitor());
+  }
 
   // router configuration
-  apiRouter.use(bodyParser.json());
+  router.use(bodyParser.json());
 
   // START: API Routes
-  // Example: apiRouter.use('/users', 'path of controller');
-  // apiRouter.use('/', require('./controllers/users'));
+  // Example: router.use('/users', 'path of controller');
+  // router.use('/', require('./controllers/users'));
+  router.get('/', (req, res) => {
+    return res.send('Hello world.');
+  });
   // END: API Routes
 
-  return apiRouter;
+  return router;
 };
 
 module.exports = Router;

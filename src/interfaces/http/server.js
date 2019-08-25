@@ -1,29 +1,38 @@
 const express = require('express');
 
-const Server = ({ logger, router }) => {
-  const app = express();
+class Server {
+  constructor({ logger, router }) {
+    this.app = express();
+    this.logger = logger;
+    this.router = router;
+  }
 
-  // this will remove the Powered by Express header thingy
-  app.disable('x-powered-by');
+  /**
+   * Server Configurations
+   */
+  configure() {
+    // remove the Powered by Express header
+    this.app.disable('x-powered-by');
 
-  // load up the router
-  app.use(router);
+    // load up the router
+    this.app.use(this.router);
 
-  // static folder
-  app.use(express.static('public'));
+    // static folder
+    this.app.use(express.static('public'));
+  }
 
-  return {
-    app,
-    start: () => {
-      return new Promise(() => {
-        const http = app.listen('3000', () => {
-          const { port } = http.address();
+  start() {
+    // enable the configuration of the server.
+    this.configure();
 
-          logger.info(`API Running at Port: ${port}`);
-        });
+    return new Promise(resolve => {
+      const http = this.app.listen(3000, () => {
+        const { port } = http.address();
+
+        this.logger.info(`API Running at port: ${port}`);
       });
-    },
-  };
-};
+    });
+  }
+}
 
 module.exports = Server;
