@@ -1,8 +1,9 @@
 const express = require('express');
 
 class Server {
-  constructor({ logger, router }) {
+  constructor({ config, logger, router }) {
     this.app = express();
+    this.config = config;
     this.logger = logger;
     this.router = router;
   }
@@ -26,7 +27,7 @@ class Server {
     this.configure();
 
     return new Promise(resolve => {
-      const http = this.app.listen(3000, () => {
+      const http = this.app.listen(this.config.port, () => {
         const { port } = http.address();
 
         this.logger.info(`API Running at port: ${port}`);

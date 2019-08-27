@@ -20,9 +20,11 @@ const ENV = process.env.APP_ENV || 'development';
 const dbConfig = loadDatabaseConfig();
 
 // setup the config
-const config = Object.assign({
-  env: ENV,
+const config = {env: ENV,
   db: dbConfig,
-});
+  key: process.env.APP_KEY,
+  debug: process.env.APP_DEBUG,
+  port: process.env.APP_PORT,
+  graphqlEndpoint: process.env.GRAPHQL_ENDPOINT,};
 
 module.exports = config;

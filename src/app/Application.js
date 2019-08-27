@@ -1,5 +1,6 @@
 class Application {
-  constructor({ server }) {
+  constructor({ graphql, server }) {
+    this.graphql = graphql;
     this.server = server;
   }
 
@@ -7,7 +8,9 @@ class Application {
     return this.server.start();
   }
 
-  startGraphQL() {}
+  startGraphQL() {
+    return this.graphql.start();
+  }
 }
 
 module.exports = Application;
