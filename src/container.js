@@ -10,8 +10,12 @@ const logger = require('./infra/logging/logger');
 // const repository = require('./infra/repositories');
 
 // interfaces
+// server setup
 const router = require('./interfaces/http/router');
 const Server = require('./interfaces/http/Server');
+
+// graphql setup
+const GraphQL = require('./interfaces/graphql/Server');
 
 // instantiate the container
 const container = createContainer();
@@ -26,8 +30,12 @@ container.register({
   logger: asFunction(logger).singleton(),
 
   // interfaces
+  // server/rest api setup
   router: asFunction(router).singleton(),
   server: asClass(Server).singleton(),
+
+  // graphql
+  graphql: asClass(GraphQL).singleton(),
 });
 
 // load app modules
