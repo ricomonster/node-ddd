@@ -1,11 +1,13 @@
 class CreateUser {
-  constructor({ userRepository }) {
+  constructor({ logger, userRepository }) {
+    this.logger = logger;
     this.userRepository = userRepository;
   }
 
   async execute(data) {
-    console.log('d', data);
-    console.log('tt', this.userRepository.create(data));
+    this.logger.info(data);
+    const user = await this.userRepository.create(data);
+    this.logger.info(user);
   }
 }
 

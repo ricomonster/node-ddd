@@ -19,9 +19,10 @@ const Router = ({ config }) => {
   // START: API Routes
   // Example: router.use('/users', 'path of controller');
   // router.use('/', require('./controllers/users'));
-  router.get('/', (req, res) => {
-    return res.send('Hello world.');
-  });
+  // router.get('/', (req, res) => {
+  //   return res.send('Hello world.');
+  // });
+  router.use('/', controller('UserController'));
   // END: API Routes
 
   return router;

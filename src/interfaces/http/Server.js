@@ -22,10 +22,14 @@ class Server {
     this.app.use(express.static('public'));
   }
 
+  /**
+   * Boots up the server
+   */
   start() {
     // enable the configuration of the server.
     this.configure();
 
+    // start the server
     return new Promise(resolve => {
       const http = this.app.listen(this.config.port, () => {
         const { port } = http.address();

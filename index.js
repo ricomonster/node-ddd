@@ -3,7 +3,7 @@ const container = require('src/container');
 
 const app = container.resolve('app');
 
-app.startGraphQL().catch(error => {
+app.start().catch(error => {
   app.server.logger.error(error.stack);
   process.exit();
 });
