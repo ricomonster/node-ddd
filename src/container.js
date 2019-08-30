@@ -6,8 +6,8 @@ const config = require('./../config');
 
 // infrastructures
 const database = require('./infra/database');
+const Encryption = require('./infra/encryption/Encryption');
 const logger = require('./infra/logging/logger');
-// const repository = require('./infra/repositories');
 
 // interfaces
 // server setup
@@ -27,6 +27,7 @@ container.register({
 
   // infrastructures
   database: asFunction(database).singleton(),
+  encryption: asClass(Encryption).singleton(),
   logger: asFunction(logger).singleton(),
 
   // interfaces
@@ -41,14 +42,18 @@ container.register({
 // load app modules
 // will load up the the contents of the following:
 // - app/*
+// - infra/authentication/*
 // - infra/repositories/*
-container.loadModules(['app/**/*.js', 'infra/repositories/*!(BaseRepository).js'], {
-  formatName: 'camelCase',
-  resolverOptions: {
-    lifetime: Lifetime.SINGLETON,
-  },
-  cwd: __dirname,
-});
+container.loadModules(
+  ['app/**/*.js', 'infra/authentication/*.js', 'infra/repositories/*!(BaseRepository).js'],
+  {
+    formatName: 'camelCase',
+    resolverOptions: {
+      lifetime: Lifetime.SINGLETON,
+    },
+    cwd: __dirname,
+  }
+);
 
 // container.cradle.createUser.execute({});
 

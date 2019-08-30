@@ -6,8 +6,16 @@ const User = attributes({
   email: String,
   emailVerifiedAt: Number,
   password: String,
+  active: Boolean,
   createdAt: Number,
   updatedAt: Number,
 })(class User {});
+
+User.prototype.toJSON = () => {
+  const user = { ...this.get() };
+
+  delete user.password;
+  return user;
+};
 
 module.exports = User;

@@ -14,15 +14,15 @@ const Router = ({ config }) => {
   }
 
   // router configuration
-  router.use(bodyParser.json());
+  router.use(
+    bodyParser.urlencoded({
+      extended: true,
+    })
+  );
 
   // START: API Routes
-  // Example: router.use('/users', 'path of controller');
-  // router.use('/', require('./controllers/users'));
-  // router.get('/', (req, res) => {
-  //   return res.send('Hello world.');
-  // });
-  router.use('/', controller('UserController'));
+  // router.use('/', controller('UserController'));
+  router.use('/auth', controller('AuthController'));
   // END: API Routes
 
   return router;
