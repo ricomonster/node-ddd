@@ -8,6 +8,7 @@ const config = require('./../config');
 const database = require('./infra/database');
 const Encryption = require('./infra/encryption/Encryption');
 const logger = require('./infra/logging/logger');
+const Validator = require('./infra/validation/Validator');
 
 // interfaces
 // server setup
@@ -29,6 +30,7 @@ container.register({
   database: asFunction(database).singleton(),
   encryption: asClass(Encryption).singleton(),
   logger: asFunction(logger).singleton(),
+  validator: asClass(Validator).singleton(),
 
   // interfaces
   // server/rest api setup

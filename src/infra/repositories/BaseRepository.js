@@ -39,9 +39,7 @@ class BaseRepository {
     const where = { [field]: value };
 
     if (active) {
-      where.active = {
-        eq: true,
-      };
+      where.active = 1;
     }
 
     // perform search

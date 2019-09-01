@@ -8,8 +8,9 @@ const BaseRepository = require('./BaseRepository');
  * @extends {BaseRepository}
  */
 class AuthRepository extends BaseRepository {
-  constructor({ jwt }) {
+  constructor({ encryption, jwt }) {
     super();
+    this.encryption = encryption;
     this.jwt = jwt;
   }
 
@@ -46,6 +47,18 @@ class AuthRepository extends BaseRepository {
    */
   verifyToken(token, key) {
     return this.jwt.verify(token, key);
+  }
+
+  /**
+   * Validates if the given raw password is the same to the encoded password.
+   *
+   * @param {String} password
+   * @param {String} encodedPassword
+   * @returns {Boolean}
+   * @memberof AuthRepository
+   */
+  verifyPassword(password, encodedPassword) {
+    return this.encryption.compare(password, encodedPassword);
   }
 }
 
