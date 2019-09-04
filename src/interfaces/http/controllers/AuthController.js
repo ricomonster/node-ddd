@@ -10,11 +10,6 @@ class AuthController extends BaseController {
     this.logger = this.operations.logger;
   }
 
-  /**
-   * Auth Login
-   *
-   * @memberof AuthController
-   */
   async login(req, res) {
     try {
       const data = await this.authLogin.execute(req.body);
