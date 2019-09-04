@@ -1,4 +1,5 @@
 const express = require('express');
+const hbs = require('express-hbs');
 
 class Server {
   constructor({ config, logger, router }) {
@@ -26,6 +27,9 @@ class Server {
    * Boots up the server
    */
   start() {
+    // loadup the template engine
+    this.template();
+
     // enable the configuration of the server.
     this.configure();
 
@@ -37,6 +41,27 @@ class Server {
         this.logger.info(`API Running at port: ${port}`);
       });
     });
+  }
+
+  /**
+   * Configures the template engine to use.
+   *
+   * @memberof Server
+   */
+  template() {
+    // set the template engine
+    this.app.engine(
+      'html',
+      hbs.express4({
+        extname: '.html',
+      })
+    );
+
+    // set the view engine
+    this.app.set('view engine', 'html');
+
+    // set the path of the templates
+    this.app.set('views', `${__dirname}/resources/views`);
   }
 }
 

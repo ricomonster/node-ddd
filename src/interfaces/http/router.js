@@ -2,15 +2,19 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const statusMonitor = require('express-status-monitor');
+const morgan = require('morgan');
 
 const controller = require('./utils/create-controller-routes');
 
-const Router = ({ config }) => {
+const Router = container => {
+  const { config } = container;
+
   const router = express.Router();
 
   // status monitor for development
   if (config.env === 'development') {
     router.use(statusMonitor());
+    router.use(morgan('dev'));
   }
 
   // router configuration
@@ -21,7 +25,9 @@ const Router = ({ config }) => {
   );
 
   // START: API Routes
-  // router.use('/', controller('UserController'));
+  router.get('/', (req, res) => {
+    return res.render('index');
+  });
   router.use('/auth', controller('AuthController'));
   // END: API Routes
 
