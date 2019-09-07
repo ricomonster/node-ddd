@@ -28,7 +28,9 @@ class BaseRepository {
     return this.findByField(field, value);
   }
 
-  async findById(id) {}
+  async findById(id) {
+    return this.findByField('id', id);
+  }
 
   async update(data) {}
 
