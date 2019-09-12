@@ -32,6 +32,16 @@ class BaseRepository {
     return this.findByField('id', id);
   }
 
+  async search(args) {
+    const result = await this.model.findAndCountAll();
+
+    // return
+    return {
+      results: result.rows,
+      total: result.count,
+    };
+  }
+
   async update(data) {}
 
   async delete() {}
