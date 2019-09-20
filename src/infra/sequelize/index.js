@@ -1,7 +1,12 @@
 // dependencies
 const fs = require('fs');
+const inflection = require('inflection');
 const path = require('path');
 const Sequelize = require('sequelize');
+
+const singularizeToUpper = str => {
+  return inflection.singularize(str.replace(/^./, f => f.toUpperCase()));
+};
 
 const SequelizeInfra = ({ config, basePath }) => {
   // instantiate sequelize
@@ -19,11 +24,20 @@ const SequelizeInfra = ({ config, basePath }) => {
   };
 
   // get the models and associate it
-  const dir = path.join(basePath, './models');
-  fs.readdirSync(dir).forEach(file => {
-    const modelDir = path.join(dir, file);
-    const model = sequelize.import(modelDir);
-    db.models[`${model.name}Model`] = model;
+  fs.readdirSync(path.join(basePath, './models'))
+    .filter(file => {
+      return file.indexOf('.') !== 0 && file !== 'index.js' && file.slice(-3) === '.js';
+    })
+    .forEach(file => {
+      const model = sequelize.import(path.join(basePath, './models', file));
+      const modelName = `${singularizeToUpper(file.split('.')[0])}Model`;
+      db.models[modelName] = model;
+    });
+
+  Object.keys(db.models).forEach(modelName => {
+    if (db.models[modelName].associate) {
+      db.models[modelName].associate(db);
+    }
   });
 
   return db;

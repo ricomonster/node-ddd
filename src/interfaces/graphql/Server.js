@@ -1,7 +1,8 @@
 // dependencies
-const express = require('express');
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
 const cors = require('cors');
+const { createContext } = require('dataloader-sequelize');
+const express = require('express');
 
 // graphql schemas
 const typeDefs = require('./type-defs');
@@ -15,7 +16,10 @@ class Server {
 
   start() {
     const { app } = this;
-    const { config, logger } = this.container;
+    const { config, database, logger } = this.container;
+
+    // dataloader
+    const sequelizeContext = createContext(database.sequelize);
 
     // build up the graphql server
     const server = new ApolloServer({
@@ -23,6 +27,7 @@ class Server {
       resolvers,
       context: ({ req }) => ({
         operations: this.container,
+        sequelize: sequelizeContext,
         ...req,
       }),
     });
@@ -36,7 +41,9 @@ class Server {
     // run the server
     return new Promise(() => {
       app.listen({ port: config.port }, () => {
-        logger.info(`GraphQL server running at http://localhost:3000${server.graphqlPath}`);
+        logger.info(
+          `GraphQL server running at http://localhost:${config.port}${server.graphqlPath}`
+        );
       });
     });
   }

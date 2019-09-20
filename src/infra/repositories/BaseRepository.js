@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 class BaseRepository {
   constructor(model, domain) {
     this.model = model;
@@ -32,8 +34,32 @@ class BaseRepository {
     return this.findByField('id', id);
   }
 
-  async search(args) {
-    const result = await this.model.findAndCountAll();
+  async search(args, active = true) {
+    // where clause
+    const where = {};
+
+    if (active) {
+      where.active = {
+        [Op.eq]: 1,
+      };
+    }
+
+    if (args.filter) {
+      // loop
+      Object.keys(args.filter).forEach(field => {
+        // set the where clause
+        where[field] = {};
+
+        // get conditions
+        const conditions = args.filter[field];
+
+        Object.keys(conditions).forEach(operation => {
+          where[field] = { [Op[operation]]: conditions[operation] };
+        });
+      });
+    }
+
+    const result = await this.model.findAndCountAll({ where });
 
     // return
     return {
@@ -51,7 +77,9 @@ class BaseRepository {
     const where = { [field]: value };
 
     if (active) {
-      where.active = 1;
+      where.active = {
+        [Op.eq]: 1,
+      };
     }
 
     // perform search
