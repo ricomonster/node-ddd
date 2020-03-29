@@ -5,9 +5,10 @@ const Application = require('./app/Application');
 const config = require('./../config');
 
 // infrastructures
-const database = require('./infra/database');
+const { database, sequelize } = require('./infra/database');
 const Encryption = require('./infra/encryption/Encryption');
 const logger = require('./infra/logging/logger');
+const models = require('./infra/models');
 const Validator = require('./infra/validation/Validator');
 
 // interfaces
@@ -28,8 +29,10 @@ container.register({
 
   // infrastructures
   database: asFunction(database).singleton(),
+  sequelize: asFunction(sequelize).singleton(),
   encryption: asClass(Encryption).singleton(),
   logger: asFunction(logger).singleton(),
+  models: asValue(models),
   validator: asClass(Validator).singleton(),
 
   // interfaces

@@ -1,13 +1,19 @@
-// dependencies
-const sequelize = require('src/infra/sequelize');
+// Dependencies
+const Sequelize = require('sequelize');
 
-const Database = ({ config, logger }) => {
-  if (!config.db) {
-    logger.error('Database configuration not found. Database will not load up.');
-    return false;
-  }
+// Config
+const config = require('./../../../config');
 
-  return sequelize({ config, basePath: __dirname });
-};
+// Check if we have config
+if (config && !config.db) {
+  throw new Error('Database configuration not found.');
+}
 
-module.exports = Database;
+// instantiate sequelize
+const database = new Sequelize(config.db.database, config.db.username, config.db.password, {
+  host: config.db.host,
+  port: config.db.port,
+  dialect: config.db.dialect,
+});
+
+module.exports = { database, sequelize: Sequelize };
