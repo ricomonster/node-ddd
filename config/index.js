@@ -4,6 +4,9 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 
+// This will fix the expected env values
+const env = require('./env');
+
 const loadDatabaseConfig = () => {
   // check if the database config exists
   if (fs.existsSync(path.join(__dirname, './database.js'))) {
@@ -14,17 +17,18 @@ const loadDatabaseConfig = () => {
   throw new Error('Database configuration is required.');
 };
 
-const ENV = process.env.APP_ENV || 'development';
+const ENV = env(process.env.NODE_ENV || 'development');
 
 // load up the database configuration
 const dbConfig = loadDatabaseConfig();
 
 // setup the config
-const config = {env: ENV,
+const config = {
+  env: ENV,
   db: dbConfig,
   key: process.env.APP_KEY,
-  debug: process.env.APP_DEBUG,
+  debug: process.env.APP_DEBUG === 'true' ? true : false,
   port: process.env.APP_PORT,
-  graphqlEndpoint: process.env.GRAPHQL_ENDPOINT,};
+};
 
 module.exports = config;

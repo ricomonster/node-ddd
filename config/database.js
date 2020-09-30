@@ -1,5 +1,8 @@
-// dependencies
+// Dependencies
 const path = require('path');
+
+// This will fix the expected env values
+const env = require('./env');
 
 // get the path of the .env
 const dotEnvPath = path.resolve('.env');
@@ -8,7 +11,7 @@ const dotEnvPath = path.resolve('.env');
 require('dotenv').config({ path: dotEnvPath });
 
 module.exports = {
-  development: {
+  [env(process.env.NODE_ENV)]: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
