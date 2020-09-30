@@ -1,11 +1,16 @@
-const { Op } = require('sequelize');
-
 class BaseRepository {
   constructor(model, domain) {
     this.model = model;
     this.domain = domain;
   }
 
+  /**
+   * Adds a new row to a given table.
+   *
+   * @param {Object} entity
+   * @returns {Promise}
+   * @memberof BaseRepository
+   */
   async create(entity) {
     let entityInstance = entity;
 
@@ -26,61 +31,48 @@ class BaseRepository {
     }
   }
 
+  /**
+   * Find a row using the column name and value.
+   *
+   * @param {String} field
+   * @param {String} value
+   * @returns {Promise}
+   * @memberof BaseRepository
+   */
   async find(field, value) {
-    return this.findByField(field, value);
+    return this._findByField(field, value, false);
   }
 
+  /**
+   * Find a row using the ID.
+   *
+   * @param {String} field
+   * @param {String} value
+   * @returns {Promise}
+   * @memberof BaseRepository
+   */
   async findById(id) {
-    return this.findByField('id', id);
+    return this._findByField('id', id, false);
   }
 
-  async search(args, active = true) {
-    // where clause
-    const where = {};
-
-    if (active) {
-      where.active = {
-        [Op.eq]: 1,
-      };
-    }
-
-    if (args.filter) {
-      // loop
-      Object.keys(args.filter).forEach(field => {
-        // set the where clause
-        where[field] = {};
-
-        // get conditions
-        const conditions = args.filter[field];
-
-        Object.keys(conditions).forEach(operation => {
-          where[field] = { [Op[operation]]: conditions[operation] };
-        });
-      });
-    }
-
-    const result = await this.model.findAndCountAll({ where });
-
-    // return
-    return {
-      results: result.rows,
-      total: result.count,
-    };
-  }
-
-  async update(data) {}
-
-  async delete() {}
-
-  findByField(field, value, active = true) {
+  /**
+   * Generic function for finding rows using a field.
+   *
+   * @param {*} field
+   * @param {*} value
+   * @param {boolean} [active=true]
+   * @returns
+   * @memberof BaseRepository
+   */
+  _findByField(field, value, active = true) {
     // set the where clause
     const where = { [field]: value };
 
-    if (active) {
-      where.active = {
-        [Op.eq]: 1,
-      };
-    }
+    // if (active) {
+    //   where.active = {
+    //     [Op.eq]: 1,
+    //   };
+    // }
 
     // perform search
     return this.model.findOne({ where }, { rejectOnEmpty: true });

@@ -1,39 +1,64 @@
-// dependencies
-// controller
+// Dependencies
+const Status = require('http-status');
+
 const BaseController = require('./BaseController');
 
 class AuthController extends BaseController {
   constructor() {
     super();
-    this.authLogin = this.operations.login;
-    this.authRegister = this.operations.register;
-    this.logger = this.operations.logger;
+
+    // Fetch the app that we only need here
+    this.loginAuth = this.container.loginAuth;
+    this.registerAuth = this.container.registerAuth;
   }
 
   async login(req, res) {
     try {
-      const data = await this.authLogin.execute(req.body);
-      return res.status(200).json({ token: data.token });
+      const result = await this.loginAuth.execute(req.body);
+
+      return res.status(Status.OK).json({
+        data: result,
+      });
     } catch (error) {
-      this.logger.error(error);
-      return res.status(error.statusCode || 400).json(error.errors || { message: error.message });
+      switch (error.message) {
+        case 'Validation failed!':
+          return res.status(Status.BAD_REQUEST).json(error.errors);
+
+        default:
+          return res.status(Status.SERVICE_UNAVAILABLE).json(error);
+      }
     }
   }
 
-  async register(req, res) {
+  async register(req, res, next) {
     try {
-      const user = await this.authRegister.execute(req.body);
-      return res.status(200).json(user.toJSON());
+      const result = await this.registerAuth.execute(req.body);
+
+      return res.status(Status.OK).json({
+        message: 'Account successfully registered.',
+        data: result,
+      });
     } catch (error) {
-      this.logger.error(error);
-      return res.status(error.statusCode || 400).json(error.errors || { message: error.message });
+      switch (error.message) {
+        case 'Email already exists.':
+        case 'Validation failed!':
+          return res.status(Status.BAD_REQUEST).json(error.errors);
+
+        default:
+          return res.status(Status.SERVICE_UNAVAILABLE).json(error);
+      }
     }
   }
 
   routes() {
+    // Set the routes
     this.router.post('/login', this.login.bind(this));
     this.router.post('/register', this.register.bind(this));
-    return this.router;
+
+    return {
+      name: '/auth',
+      router: this.router,
+    };
   }
 }
 

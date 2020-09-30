@@ -2,6 +2,10 @@
 const jwt = require('jsonwebtoken');
 
 class JWT {
+  constructor({ config }) {
+    this.config = config;
+  }
+
   /**
    * Decodes the content of a given token.
    *
@@ -23,8 +27,7 @@ class JWT {
    */
   sign(user, key) {
     return jwt.sign(user, key, {
-      // TODO: this can be also set via config
-      expiresIn: 3600,
+      expiresIn: this.config.tokenTtl || 3600,
     });
   }
 

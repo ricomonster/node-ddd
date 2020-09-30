@@ -4,16 +4,16 @@ const User = attributes({
   id: Number,
   name: String,
   email: String,
-  emailVerifiedAt: Number,
   password: String,
   active: Boolean,
-  createdAt: Number,
-  updatedAt: Number,
+  verifiedAt: Date,
+  createdAt: Date,
+  updatedAt: Date,
 })(class User {});
 
 User.prototype.toJSON = () => {
   const user = { ...this.get() };
-
+  console.log('ss', user);
   delete user.password;
   return user;
 };

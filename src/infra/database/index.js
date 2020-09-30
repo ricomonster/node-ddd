@@ -9,11 +9,15 @@ if (config && !config.db) {
   throw new Error('Database configuration not found.');
 }
 
-// instantiate sequelize
-const database = new Sequelize(config.db.database, config.db.username, config.db.password, {
-  host: config.db.host,
-  port: config.db.port,
-  dialect: config.db.dialect,
+// Extract
+const { database, username, password, port, dialect, host } = config.db;
+
+// Instantiate sequelize
+const sequelizeDb = new Sequelize(database, username, password, {
+  host,
+  port,
+  dialect,
+  logging: config.debug ? console.log : false,
 });
 
-module.exports = { database, sequelize: Sequelize };
+module.exports = { database: sequelizeDb, sequelize: Sequelize };

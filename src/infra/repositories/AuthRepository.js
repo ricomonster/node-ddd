@@ -1,15 +1,5 @@
-// repository
-const BaseRepository = require('./BaseRepository');
-
-/**
- * AuthRepository
- *
- * @class AuthRepository
- * @extends {BaseRepository}
- */
-class AuthRepository extends BaseRepository {
+class AuthRepository {
   constructor({ encryption, jwt }) {
-    super();
     this.encryption = encryption;
     this.jwt = jwt;
   }

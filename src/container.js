@@ -1,56 +1,33 @@
-const { asClass, asValue, asFunction, createContainer, Lifetime } = require('awilix');
+const { createContainer, Lifetime, asClass, asValue } = require('awilix');
 
-// dependencies
-const Application = require('./app/Application');
+// Configuration
 const config = require('./../config');
 
-// infrastructures
-const { database, sequelize } = require('./infra/database');
-const Encryption = require('./infra/encryption/Encryption');
-const logger = require('./infra/logging/logger');
+// Infra
 const models = require('./infra/models');
-const Validator = require('./infra/validation/Validator');
 
-// interfaces
-// server setup
-const router = require('./interfaces/http/router');
+// Interfaces
 const Server = require('./interfaces/http/Server');
 
-// graphql setup
-const GraphQL = require('./interfaces/graphql/Server');
-
-// instantiate the container
+// Start creating the container
 const container = createContainer();
 
-// build out the system
+// Register manually
 container.register({
-  app: asClass(Application).singleton(),
   config: asValue(config),
-
-  // infrastructures
-  database: asFunction(database).singleton(),
-  sequelize: asFunction(sequelize).singleton(),
-  encryption: asClass(Encryption).singleton(),
-  logger: asFunction(logger).singleton(),
   models: asValue(models),
-  validator: asClass(Validator).singleton(),
 
-  // interfaces
-  // server/rest api setup
-  router: asFunction(router).singleton(),
   server: asClass(Server).singleton(),
-
-  // graphql
-  graphql: asClass(GraphQL).singleton(),
 });
 
-// load app modules
-// will load up the the contents of the following:
-// - app/*
-// - infra/authentication/*
-// - infra/repositories/*
+// Dynamically register app, infra components
 container.loadModules(
-  ['app/**/*.js', 'infra/authentication/*.js', 'infra/repositories/*!(BaseRepository).js'],
+  [
+    'app/**/*.js',
+    'infra/authentication/*.js',
+    'infra/encryption/*.js',
+    'infra/repositories/*!(BaseRepository).js',
+  ],
   {
     formatName: 'camelCase',
     resolverOptions: {
@@ -60,6 +37,6 @@ container.loadModules(
   }
 );
 
-// container.cradle.createUser.execute({});
+console.log(container.registrations);
 
 module.exports = container;

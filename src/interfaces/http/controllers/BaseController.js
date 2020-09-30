@@ -1,13 +1,13 @@
-// dependencies
+// Dependencies
 const { Router } = require('express');
 
-// container
+// Container
 const container = require('src/container');
 
 class BaseController {
   constructor() {
     this.router = new Router();
-    this.operations = container.cradle;
+    this.container = container.cradle;
   }
 }
 
