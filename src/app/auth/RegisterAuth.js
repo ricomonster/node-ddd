@@ -2,35 +2,29 @@
 const Register = require('src/domain/auth/Register');
 const User = require('src/domain/User');
 
-// Operation
-const Operation = require('src/app/Operation');
-
-class RegisterAuth extends Operation {
+class RegisterAuth {
   constructor({ encryption, userRepository }) {
-    super();
-
     this.encryption = encryption;
     this.userRepository = userRepository;
   }
 
   async execute(args) {
-    // Get the events
-    const { SUCCESS, VALIDATION_ERROR, ERROR } = this.events;
-
     // Validate
     const registerData = new Register(args);
     const { valid, errors } = registerData.validate(args);
 
     if (!valid) {
-      return this.emit(VALIDATION_ERROR, { errors });
+      const error = new Error('Validation failed!');
+      error.errors = errors;
+      throw error;
     }
 
     // Find the user
     const existing = await this.userRepository.find('email', args.email);
     if (existing) {
-      return this.emit(VALIDATION_ERROR, {
-        errors: [{ message: 'Email already exists', path: ['email'] }],
-      });
+      const error = new Error('Email already exists.');
+      error.errors = [{ message: 'Email already exists.', path: ['email'] }];
+      throw error;
     }
 
     try {
@@ -47,13 +41,11 @@ class RegisterAuth extends Operation {
       delete newUser.dataValues.password;
       const domainUser = new User(newUser.dataValues);
 
-      this.emit(SUCCESS, domainUser.toJSON());
+      return domainUser.toJSON();
     } catch (error) {
       console.log(error);
     }
   }
 }
-
-RegisterAuth.setEvents(['SUCCESS', 'VALIDATION_ERROR', 'ERROR']);
 
 module.exports = RegisterAuth;

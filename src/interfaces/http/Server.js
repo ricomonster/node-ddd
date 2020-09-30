@@ -93,9 +93,13 @@ class Server {
         }
 
         // Get the configuration and set it
-        const { name: routeName, router: routes } = Controller.routes();
+        const { name: routeName, router: routes, middleware } = Controller.routes();
 
-        router.use(routeName, routes);
+        if (middleware) {
+          router.use(routeName, middleware, routes);
+        } else {
+          router.use(routeName, routes);
+        }
       } catch (error) {
         // Skip if file is not a constructor
         if (error.message.indexOf('is not a constructor') > -1) {

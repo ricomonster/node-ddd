@@ -13,51 +13,47 @@ class AuthController extends BaseController {
   }
 
   async login(req, res) {
-    const { SUCCESS, NOT_FOUND, VALIDATION_ERROR, ERROR } = this.loginAuth.events;
+    try {
+      const result = await this.loginAuth.execute(req.body);
 
-    this.loginAuth
-      .on(SUCCESS, (result) => {
-        return res.status(Status.OK).json(result);
-      })
-      .on(NOT_FOUND, (error) => {
-        return res.status(Status.NOT_FOUND).json(error);
-      })
-      .on(VALIDATION_ERROR, (error) => {
-        return res.status(Status.BAD_REQUEST).json(error);
-      })
-      .on(ERROR, (error) => {
-        return res.status(Status.SERVICE_UNAVAILABLE).json(error);
+      return res.status(Status.OK).json({
+        data: result,
       });
+    } catch (error) {
+      switch (error.message) {
+        case 'Validation failed!':
+          return res.status(Status.BAD_REQUEST).json(error.errors);
 
-    this.loginAuth.execute(req.body);
+        default:
+          return res.status(Status.SERVICE_UNAVAILABLE).json(error);
+      }
+    }
   }
 
   async register(req, res, next) {
-    const { operation } = req;
-    const { SUCCESS, VALIDATION_ERROR, ERROR } = operation.events;
+    try {
+      const result = await this.registerAuth.execute(req.body);
 
-    operation
-      .on(SUCCESS, (result) => {
-        res.status(Status.OK).json({
-          message: 'Account successfully registered.',
-          data: result,
-        });
+      return res.status(Status.OK).json({
+        message: 'Account successfully registered.',
+        data: result,
+      });
+    } catch (error) {
+      switch (error.message) {
+        case 'Email already exists.':
+        case 'Validation failed!':
+          return res.status(Status.BAD_REQUEST).json(error.errors);
 
-        res.end();
-      })
-      .on(VALIDATION_ERROR, (error) => {
-        res.status(Status.BAD_REQUEST).json(error);
-        res.end();
-      })
-      .on(ERROR, next);
-
-    return operation.execute(req.body);
+        default:
+          return res.status(Status.SERVICE_UNAVAILABLE).json(error);
+      }
+    }
   }
 
   routes() {
     // Set the routes
-    this.router.post('/login', this.injector(this.loginAuth), this.login);
-    this.router.post('/register', this.injector(this.registerAuth), this.register);
+    this.router.post('/login', this.login.bind(this));
+    this.router.post('/register', this.register.bind(this));
 
     return {
       name: '/auth',

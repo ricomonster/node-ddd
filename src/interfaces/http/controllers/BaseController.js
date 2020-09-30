@@ -8,12 +8,6 @@ class BaseController {
   constructor() {
     this.router = new Router();
     this.container = container.cradle;
-
-    // Dynamically inject operation based on operation request parameter
-    this.injector = (operation) => (req, res, next) => {
-      req['operation'] = operation;
-      next();
-    };
   }
 }
 

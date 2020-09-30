@@ -1,41 +1,58 @@
 // Domain
 const Login = require('src/domain/auth/Login');
 
-// Operation
-const Operation = require('src/app/Operation');
-
-class LoginAuth extends Operation {
-  constructor({ userRepository }) {
-    super();
-
+class LoginAuth {
+  constructor({ encryption, authRepository, userRepository }) {
+    this.encryption = encryption;
+    this.authRepository = authRepository;
     this.userRepository = userRepository;
   }
 
   async execute(args) {
-    // Get the events
-    const { SUCCESS, NOT_FOUND, VALIDATION_ERROR, ERROR } = this.events;
-
     // Validate
     const loginData = new Login(args);
     const { valid, errors } = loginData.validate(args);
 
     if (!valid) {
-      return this.emit(VALIDATION_ERROR, { errors });
+      const error = new Error('Validation failed!');
+      error.errors = errors;
+      throw error;
     }
 
     // Find the user
     const existing = await this.userRepository.find('email', args.email);
     if (!existing) {
-      return this.emit(NOT_FOUND, { message: 'Email does not exists.' });
+      const error = new Error('Invalid account credentials.');
+      throw error;
     }
 
+    // Validate the password
+    const { dataValues: user } = existing;
+    if (!this.authRepository.verifyPassword(args.password, user.password)) {
+      const error = new Error('Invalid account credentials.');
+      throw error;
+    }
+
+    // Generate the token for logging in
     try {
+      // Setup the data to be encoded
+      const info = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      };
+
+      const date = new Date();
+      const token = this.authRepository.generateToken(info, date.valueOf().toString());
+
+      return {
+        user: info,
+        token,
+      };
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 }
-
-LoginAuth.setEvents(['SUCCESS', 'NOT_FOUND', 'VALIDATION_ERROR', 'ERROR']);
 
 module.exports = LoginAuth;

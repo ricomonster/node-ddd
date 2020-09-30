@@ -22,7 +22,12 @@ container.register({
 
 // Dynamically register app, infra components
 container.loadModules(
-  ['app/**/*.js', 'infra/encryption/*.js', 'infra/repositories/*!(BaseRepository).js'],
+  [
+    'app/**/*.js',
+    'infra/authentication/*.js',
+    'infra/encryption/*.js',
+    'infra/repositories/*!(BaseRepository).js',
+  ],
   {
     formatName: 'camelCase',
     resolverOptions: {
