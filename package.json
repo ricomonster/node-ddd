@@ -21,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
+    "pg": "^8.3.3",
     "sequelize": "^6.3.5",
     "structure": "^2.0.1"
   },

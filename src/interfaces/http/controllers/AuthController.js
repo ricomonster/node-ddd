@@ -19,6 +19,7 @@ class AuthController extends BaseController {
         data: result,
       });
     } catch (error) {
+      console.log(error);
       switch (error.message) {
         case 'Validation failed!':
           return res.status(Status.BAD_REQUEST).json(error.errors);
@@ -31,7 +32,7 @@ class AuthController extends BaseController {
 
   async register(req, res, next) {
     try {
-      const registerAuth = req.container.resolve('loginAuth');
+      const registerAuth = req.container.resolve('registerAuth');
       const result = await registerAuth.execute(req.body);
 
       return res.status(Status.OK).json({
@@ -39,6 +40,7 @@ class AuthController extends BaseController {
         data: result,
       });
     } catch (error) {
+      console.error(error);
       switch (error.message) {
         case 'Email already exists.':
         case 'Validation failed!':
