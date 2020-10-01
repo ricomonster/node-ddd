@@ -13,7 +13,6 @@ const User = attributes({
 
 User.prototype.toJSON = () => {
   const user = { ...this.get() };
-  console.log('ss', user);
   delete user.password;
   return user;
 };

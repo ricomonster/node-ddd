@@ -6,9 +6,12 @@ const morgan = require('morgan');
 // const hbs = require('express-hbs');
 
 class Server {
-  constructor({ config }) {
+  constructor({ config, containerMiddleware }) {
     this.app = express();
     this.config = config;
+
+    // Load up the container
+    this.app.use(containerMiddleware);
   }
 
   /**
@@ -16,7 +19,7 @@ class Server {
    */
   start() {
     // loadup the template engine
-    // this.template();
+    // this._template();
 
     // enable the configuration of the server.
     this._configure();
@@ -42,12 +45,9 @@ class Server {
     this.app.use(this._router());
 
     // Handle invalid requests
-    // this.app.use((req, res) => {
-    //   return res.status(404).json({ error: 'Not found' });
-    // });
-
-    // static folder
-    // this.app.use(express.static('public'));
+    this.app.use((req, res) => {
+      return res.status(404).json({ error: 'Not found' });
+    });
   }
 
   /**
@@ -119,7 +119,9 @@ class Server {
    *
    * @memberof Server
    */
-  template() {
+  _template() {
+    // static folder
+    // this.app.use(express.static('public'));
     // // set the template engine
     // this.app.engine(
     //   'html',

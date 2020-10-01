@@ -2,8 +2,8 @@
 const Login = require('src/domain/auth/Login');
 
 class LoginAuth {
-  constructor({ encryption, authRepository, userRepository }) {
-    this.encryption = encryption;
+  constructor({ config, authRepository, userRepository }) {
+    this.config = config;
     this.authRepository = authRepository;
     this.userRepository = userRepository;
   }
@@ -42,8 +42,12 @@ class LoginAuth {
         email: user.email,
       };
 
-      const date = new Date();
-      const token = this.authRepository.generateToken(info, date.valueOf().toString());
+      // Generate token
+      const token = this.authRepository.generateToken(
+        info,
+        this.config.jwt.secret,
+        this.config.jwt.ttl
+      );
 
       return {
         user: info,

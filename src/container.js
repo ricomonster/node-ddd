@@ -1,4 +1,5 @@
 const { createContainer, Lifetime, asClass, asValue } = require('awilix');
+const { scopePerRequest } = require('awilix-express');
 
 // Configuration
 const config = require('./../config');
@@ -36,6 +37,11 @@ container.loadModules(
     cwd: __dirname,
   }
 );
+
+// Middleware
+container.register({
+  containerMiddleware: asValue(scopePerRequest(container)),
+});
 
 console.log(container.registrations);
 

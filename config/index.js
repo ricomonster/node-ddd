@@ -26,7 +26,10 @@ const dbConfig = loadDatabaseConfig();
 const config = {
   env: ENV,
   db: dbConfig,
-  key: process.env.APP_KEY,
+  jwt: {
+    secret: process.env.APP_KEY,
+    ttl: process.env.APP_JWT_TTL,
+  },
   debug: process.env.APP_DEBUG === 'true' ? true : false,
   port: process.env.APP_PORT,
 };
