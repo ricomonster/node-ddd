@@ -1,20 +1,19 @@
 // Dependencies
 const Status = require('http-status');
 
+// Middlewares
+const AuthorizeMiddleware = require('src/interfaces/http/middlewares/authorize');
 const BaseController = require('./BaseController');
 
 class AuthController extends BaseController {
   constructor() {
     super();
-
-    // Fetch the app that we only need here
-    this.loginAuth = this.container.loginAuth;
-    this.registerAuth = this.container.registerAuth;
   }
 
   async login(req, res) {
     try {
-      const result = await this.loginAuth.execute(req.body);
+      const loginAuth = req.container.resolve('loginAuth');
+      const result = await loginAuth.execute(req.body);
 
       return res.status(Status.OK).json({
         data: result,
@@ -32,7 +31,8 @@ class AuthController extends BaseController {
 
   async register(req, res, next) {
     try {
-      const result = await this.registerAuth.execute(req.body);
+      const registerAuth = req.container.resolve('loginAuth');
+      const result = await registerAuth.execute(req.body);
 
       return res.status(Status.OK).json({
         message: 'Account successfully registered.',
@@ -57,6 +57,7 @@ class AuthController extends BaseController {
 
     return {
       name: '/auth',
+      // middleware: AuthorizeMiddleware,
       router: this.router,
     };
   }

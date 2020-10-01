@@ -22,12 +22,13 @@ class JWT {
    *
    * @param {Object} user
    * @param {String} key
+   * @param {Integer} ttl
    * @returns {String}
    * @memberof JWT
    */
-  sign(user, key) {
+  sign(user, key, ttl = 3600) {
     return jwt.sign(user, key, {
-      expiresIn: this.config.tokenTtl || 3600,
+      expiresIn: ttl,
     });
   }
 

@@ -7,7 +7,6 @@ const container = require('src/container');
 class BaseController {
   constructor() {
     this.router = new Router();
-    this.container = container.cradle;
   }
 }
 

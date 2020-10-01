@@ -20,11 +20,12 @@ class AuthRepository {
    *
    * @param {Object} user
    * @param {String} key
+   * @param {Integer} ttl
    * @returns {String}
    * @memberof AuthRepository
    */
-  generateToken(user, key) {
-    return this.jwt.sign(user, key);
+  generateToken(user, key, ttl = 3600) {
+    return this.jwt.sign(user, key, ttl);
   }
 
   /**
