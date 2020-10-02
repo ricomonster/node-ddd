@@ -5,14 +5,17 @@ const JWT = require('src/infra/authentication/JWT');
 describe('Infra :: Authentication :: JWT', () => {
   context('should work properly', () => {
     let jwt;
-    const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoibmFtZSIsImVtYWlsIjoiZW1haWxAZW1haWwuY29tIiwiaWF0IjoxNjAxNjA0MjA5LCJleHAiOjE2MDE2MDc4MDl9.zK3zRHugUXRHCdmQQZQxbSR7vxEe9YS9ArbgTasUnVM';
+    let token;
 
     before(() => {
       jwt = new JWT();
     });
 
-    it('decode token properly', () => {
+    it('should generate/sign a token', () => {
+      token = jwt.sign({ name: 'name', email: 'email@email.com' }, 'secret', 3600);
+
+      // We cannot test it directly as tokens tend to change every generation
+      // So we're going to decode and check if the values are there
       const decodedToken = jwt.decode(token);
 
       expect(token).to.be.string;
@@ -24,11 +27,7 @@ describe('Infra :: Authentication :: JWT', () => {
       expect(decodedToken.email).to.equal('email@email.com');
     });
 
-    it('should generate/sign a token', () => {
-      const token = jwt.sign({ name: 'name', email: 'email@email.com' }, 'secret', 3600);
-
-      // We cannot test it directly as tokens tend to change every generation
-      // So we're going to decode and check if the values are there
+    it('decode token properly', () => {
       const decodedToken = jwt.decode(token);
 
       expect(token).to.be.string;

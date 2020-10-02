@@ -1,12 +1,16 @@
-name: Node DDD CI
+name: node-ddd-develop
 
 on:
+  pull_request:
+    branches: develop
+
   push:
     branches:
       - develop
 
 jobs:
-  build:
+  test:
+    name: Run Unit Tests
     runs-on: ubuntu-latest
 
     strategy:
@@ -19,7 +23,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm run test:unit
-        env:
-          CI: true
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Unit Tests
+        run: npm run test:unit
