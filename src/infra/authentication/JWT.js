@@ -2,10 +2,6 @@
 const jwt = require('jsonwebtoken');
 
 class JWT {
-  constructor({ config }) {
-    this.config = config;
-  }
-
   /**
    * Decodes the content of a given token.
    *
@@ -18,16 +14,16 @@ class JWT {
   }
 
   /**
-   * Generates a token based on the given user info.
+   * Generates a token based on the given info.
    *
-   * @param {Object} user
+   * @param {Object} data
    * @param {String} key
    * @param {Integer} ttl
    * @returns {String}
    * @memberof JWT
    */
-  sign(user, key, ttl = 3600) {
-    return jwt.sign(user, key, {
+  sign(data, key, ttl = 3600) {
+    return jwt.sign(data, key, {
       expiresIn: ttl,
     });
   }
