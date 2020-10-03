@@ -14,17 +14,7 @@ describe('Infra :: Authentication :: JWT', () => {
     it('should generate/sign a token', () => {
       token = jwt.sign({ name: 'name', email: 'email@email.com' }, 'secret', 3600);
 
-      // We cannot test it directly as tokens tend to change every generation
-      // So we're going to decode and check if the values are there
-      const decodedToken = jwt.decode(token);
-
       expect(token).to.be.string;
-      expect(decodedToken).to.have.property('name');
-      expect(decodedToken).to.have.property('email');
-      expect(decodedToken).to.have.property('iat');
-      expect(decodedToken).to.have.property('exp');
-      expect(decodedToken.name).to.equal('name');
-      expect(decodedToken.email).to.equal('email@email.com');
     });
 
     it('decode token properly', () => {
