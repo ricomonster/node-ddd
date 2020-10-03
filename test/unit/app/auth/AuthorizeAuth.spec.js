@@ -5,7 +5,7 @@ const { user } = require('test/support/mock');
 const AuthorizeAuth = require('src/app/auth/AuthorizeAuth');
 const AuthRepository = require('src/infra/repository/AuthRepository');
 
-const AuthRepository = describe('App :: Auth :: AuthorizeAuth', () => {
+describe('App :: Auth :: AuthorizeAuth', () => {
   context('should work properly', () => {
     let authorizeAuth;
 
