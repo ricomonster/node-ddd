@@ -1,9 +1,11 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const bodyParser = require('body-parser');
 const morgan = require('morgan');
-// const hbs = require('express-hbs');
+const routeList = require('express-routes-catalogue');
+
+// Routes configuration
+const routes = require('./routes');
 
 class Server {
   constructor({ config, containerMiddleware }) {
@@ -41,77 +43,16 @@ class Server {
     // remove the Powered by Express header
     // this.app.disable('x-powered-by');
 
-    // load up the router
-    this.app.use(this._router());
+    // load up the routes
+    this.app.use(routes());
+
+    // Show available endpoints in the terminal
+    routeList.default.terminal(this.app);
 
     // Handle invalid requests
     this.app.use((req, res) => {
       return res.status(404).json({ error: 'Not found' });
     });
-  }
-
-  /**
-   * Configures the routing
-   */
-  _router() {
-    // Initialize router
-    const router = express.Router();
-
-    // Router configuration
-    router.use(bodyParser.urlencoded({ extended: true }));
-
-    // Enable logging for console
-    // NOTE: This can be use also in other env's. Consider using it permanently
-    if (this.config.env === 'development') {
-      router.use(morgan('dev'));
-    }
-
-    // Check if we have controllers folder
-    const controllersPath = path.resolve(__dirname, 'controllers');
-
-    fs.readdirSync(controllersPath).forEach((file) => {
-      // Skip if file is the BaseController or file does not have a Controller word
-      if (
-        file.indexOf('BaseController') > -1 ||
-        file.indexOf('Controller') < 0 ||
-        file.indexOf('.js') < 0
-      ) {
-        return false;
-      }
-
-      // let's require that file and instantiate it
-      const controllerPath = path.resolve(controllersPath, file);
-      const ControllerInstance = require(`${controllerPath}`);
-
-      // Let's try to instantiate it
-      try {
-        const Controller = new ControllerInstance();
-
-        // Check if has routes configuration
-        if (typeof Controller.routes !== 'function') {
-          throw new Error(`${Controller.constructor.name} does not have route configuration.`);
-        }
-
-        // Get the configuration and set it
-        const { name: routeName, router: routes, middleware } = Controller.routes();
-
-        if (middleware) {
-          router.use(routeName, middleware, routes);
-        } else {
-          router.use(routeName, routes);
-        }
-      } catch (error) {
-        // Skip if file is not a constructor
-        if (error.message.indexOf('is not a constructor') > -1) {
-          return false;
-        }
-
-        // Just show whatever error we encounter
-        console.error(error);
-      }
-    });
-
-    return router;
   }
 
   /**

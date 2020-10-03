@@ -1,8 +1,5 @@
 // Dependencies
 const Status = require('http-status');
-
-// Middlewares
-const AuthorizeMiddleware = require('src/interfaces/http/middlewares/authorize');
 const BaseController = require('./BaseController');
 
 class AuthController extends BaseController {
