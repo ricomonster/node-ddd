@@ -1,8 +1,10 @@
 const { expect } = require('chai');
 
-const { user } = require('test/support/mock');
+const { user, jwtToken } = require('test/support/mock');
 
 const AuthorizeAuth = require('src/app/auth/AuthorizeAuth');
+const JWT = require('src/infra/authentication/JWT');
+const Encryption = require('src/infra/encryption/Encryption');
 const AuthRepository = require('src/infra/repositories/AuthRepository');
 
 describe('App :: Auth :: AuthorizeAuth', () => {
@@ -52,7 +54,7 @@ describe('App :: Auth :: AuthorizeAuth', () => {
   });
 
   context('invalid data provided', () => {
-    it('should fail due to token is expired', () => {
+    context('invalid token', () => {
       let authorizeAuth;
 
       before(() => {
@@ -63,9 +65,58 @@ describe('App :: Auth :: AuthorizeAuth', () => {
         };
 
         authorizeAuth = new AuthorizeAuth({
-          authRepository: new AuthRepository(),
+          authRepository: new AuthRepository({
+            encryption: new Encryption(),
+            jwt: new JWT(),
+          }),
           userRepository: MockUserRepository,
         });
+      });
+
+      it('should fail due to token is expired', async () => {
+        try {
+          await authorizeAuth.execute(jwtToken);
+        } catch (error) {
+          expect(error.message).to.be.equal('Token expired.');
+        }
+      });
+    });
+
+    context('email/account does not exists', () => {
+      let authorizeAuth;
+
+      before(() => {
+        const MockUserRepository = {
+          find: (field, value) => {
+            return Promise.resolve(false);
+          },
+        };
+
+        const currentTime = Math.round(Date.now() / 1000);
+        const MockAuthRepository = {
+          decodeToken: () => {
+            return {
+              id: 1,
+              name: user.name,
+              email: user.email,
+              iat: currentTime,
+              exp: currentTime + 3600,
+            };
+          },
+        };
+
+        authorizeAuth = new AuthorizeAuth({
+          authRepository: MockAuthRepository,
+          userRepository: MockUserRepository,
+        });
+      });
+
+      it('should fail email is invalid.', async () => {
+        try {
+          await authorizeAuth.execute(jwtToken);
+        } catch (error) {
+          expect(error.message).to.be.equal('Unauthorized access.');
+        }
       });
     });
   });

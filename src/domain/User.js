@@ -11,10 +11,4 @@ const User = attributes({
   updatedAt: Date,
 })(class User {});
 
-User.prototype.toJSON = () => {
-  const user = { ...this.get() };
-  delete user.password;
-  return user;
-};
-
 module.exports = User;
