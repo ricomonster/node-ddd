@@ -18,6 +18,7 @@ node_modules/
 
 # Config
 .env
+env.yml
 
 # NYC
 .nyc_output

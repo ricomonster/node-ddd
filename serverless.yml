@@ -1,0 +1,40 @@
+service: node-ddd
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${self:custom.stage}
+  region: ${file(env.yml):${self:custom.stage}.AWS_REGION, 'ap-southeast-1'}
+  environment:
+    NODE_PATH: ${file(env.yml):${self:custom.stage}.NODE_PATH, './:/opt/node_modules'}
+    NODE_ENV: ${file(env.yml):${self:custom.stage}.NODE_ENV, 'development'}
+  tracing:
+    apiGateway: false
+    lambda: false # Optional, can be true (true equals 'Active'), 'Active' or 'PassThrough'
+  versionFunctions: false
+  memorySize: 1024
+
+custom:
+  stage: ${opt:stage, 'development'}
+  env: ${file(env.yml):${self:custom.stage}}
+  layerArn: ${self:custom.env.LAYER_ARN}
+  serverless-offline:
+    httpPort: ${file(env.yml):${self:custom.stage}.SLS_OFFLINE_HTTP_PORT, '3000'}
+    lambdaPort: ${file(env.yml):${self:custom.stage}.SLS_OFFLINE_LAMBDA_PORT, '3002'}
+# iamRoleStatements:
+#    - Effect: 'Allow'
+#     Action:
+#       - 'xray:PutTraceSegments'
+#       - 'xray:PutTelemetryRecords'
+#     Resource:
+#       - '*'
+
+# functions:
+#   functionName:
+#     handler: handlerPath
+
+# resources:
+#   Resources:
