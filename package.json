@@ -6,7 +6,12 @@
   "scripts": {
     "start:http": "cross-env NODE_PATH=. nodemon",
     "test": "nyc npm run test:unit",
-    "test:unit": "cross-env NODE_PATH=. NODE_ENV=test mocha --config test/unit.mocharc.js"
+    "test:unit": "cross-env NODE_PATH=. NODE_ENV=test mocha --config test/unit.mocharc.js",
+    "db:migrate": "cross-env NODE_PATH=. sequelize db:migrate",
+    "db:reset": "cross-env NODE_PATH=. sequelize db:migrate:undo:all; cross-env NODE_PATH=. sequelize db:migrate",
+    "db:revert": "cross-env NODE_PATH=. sequelize db:migrate:undo",
+    "db:revert:all": "cross-env NODE_PATH=. sequelize db:migrate:undo:all",
+    "db:seed": "cross-env NODE_PATH=. sequelize db:seed:all"
   },
   "author": "",
   "license": "ISC",

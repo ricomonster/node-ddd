@@ -1,0 +1,9 @@
+{
+  "cwd": "./src",
+  "exclude": [
+    "container.js",
+    "app/Application.js",
+    "interfaces/http"
+  ],
+  "temp-dir": "./../.nyc_output"
+}
