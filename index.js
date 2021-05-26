@@ -1,8 +1,9 @@
-const container = require('src/container');
+const container = require('./src/container');
 
-const server = container.resolve('server');
+const httpServer = container.resolve('httpServer');
+const logger = container.resolve('logger');
 
-server.start().catch((error) => {
-  console.error(error.stack);
+httpServer.start().catch((error) => {
+  logger.error(error.stack);
   process.exit();
 });

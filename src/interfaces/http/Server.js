@@ -1,79 +1,62 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const morgan = require('morgan');
-const routeList = require('express-routes-catalogue');
+const Status = require('http-status');
 
-// Routes configuration
+// Routes
 const routes = require('./routes');
 
 class Server {
-  constructor({ config, containerMiddleware }) {
-    this.app = express();
+  constructor({ config, logger }) {
     this.config = config;
+    this.logger = logger;
 
-    // Load up the container
-    this.app.use(containerMiddleware);
+    this.app = express();
+    this.http = {};
   }
 
   /**
-   * Boots up the server
+   * Setup the configuration of the HTTP Server.
+   *
+   * @memberof Server
+   */
+  configuration() {
+    // Load up the route configurations
+    this.app.use(routes());
+
+    // Handle invalid requests
+    this.app.use((req, res) => res.status(Status.NOT_FOUND).json({ error: 'Not found' }));
+  }
+
+  /**
+   * This will start the Express HTTP Server.
+   *
+   * @return {Promise}
+   * @memberof Server
    */
   start() {
-    // loadup the template engine
-    // this._template();
+    // Load up the configuration
+    this.configuration();
 
-    // enable the configuration of the server.
-    this._configure();
+    return new Promise(() => {
+      this.http = this.app.listen(this.config.app.port || 3000, () => {
+        const { port } = this.http.address();
 
-    // start the server
-    return new Promise((resolve) => {
-      const http = this.app.listen(this.config.port || 3000, () => {
-        const { port } = http.address();
-
-        console.log(`API Running at port: ${port}`);
+        this.logger.info(`HTTP running at port ${port}`);
       });
     });
   }
 
   /**
-   * Server Configurations
-   */
-  _configure() {
-    // remove the Powered by Express header
-    // this.app.disable('x-powered-by');
-
-    // load up the routes
-    this.app.use(routes());
-
-    // Show available endpoints in the terminal
-    routeList.default.terminal(this.app);
-
-    // Handle invalid requests
-    this.app.use((req, res) => {
-      return res.status(404).json({ error: 'Not found' });
-    });
-  }
-
-  /**
-   * Configures the template engine to use.
+   * This will stop the Express HTTP Server Instance.
    *
+   * @return {Boolean|void}
    * @memberof Server
    */
-  _template() {
-    // static folder
-    // this.app.use(express.static('public'));
-    // // set the template engine
-    // this.app.engine(
-    //   'html',
-    //   hbs.express4({
-    //     extname: '.html',
-    //   })
-    // );
-    // // set the view engine
-    // this.app.set('view engine', 'html');
-    // // set the path of the templates
-    // this.app.set('views', `${__dirname}/resources/views`);
+  stop() {
+    if (!this.http || !this.http.close) {
+      return false;
+    }
+
+    return this.http.close();
   }
 }
 

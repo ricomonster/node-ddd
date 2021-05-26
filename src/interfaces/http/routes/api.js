@@ -1,9 +1,7 @@
 const { Router } = require('express');
 const bodyParser = require('body-parser');
 const compression = require('compression');
-
-// Utils
-const createController = require('src/interfaces/http/utils/create-controller');
+const Status = require('http-status');
 
 module.exports = () => {
   const router = new Router();
@@ -13,8 +11,11 @@ module.exports = () => {
   router.use(compression());
 
   // Routes
-  router.post('/auth/login', createController('AuthController').login);
-  router.post('/auth/register', createController('AuthController').register);
+  router.get('/', (req, res) =>
+    res.status(Status.OK).json({
+      message: 'NodeJS DDD Boilerplate API Endpoint v1.2.0',
+    })
+  );
 
   return router;
 };

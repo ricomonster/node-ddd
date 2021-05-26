@@ -1,7 +1,8 @@
 const { Router } = require('express');
 const morgan = require('morgan');
+const Status = require('http-status');
 
-// routes
+// Routes
 const api = require('./api');
 
 const routes = () => {
@@ -14,7 +15,12 @@ const routes = () => {
   // Load up the routes
   router.use('/api', api());
 
-  // Show available endpoints in the terminal
+  // Default route
+  router.get('/', (req, res) => {
+    res.status(Status.OK).json({
+      message: 'NodeJS DDD Boilerplate v1.2.0',
+    });
+  });
 
   return router;
 };

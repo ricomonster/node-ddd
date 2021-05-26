@@ -1,46 +1,50 @@
 {
   "name": "node-ddd",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.2.0",
+  "description": "Node JS Domain Driven Design boilerplate",
   "main": "index.js",
   "scripts": {
-    "start:http": "cross-env NODE_PATH=. nodemon",
-    "test": "nyc npm run test:unit",
-    "test:unit": "cross-env NODE_PATH=. NODE_ENV=test mocha --config test/unit.mocharc.js",
-    "db:migrate": "cross-env NODE_PATH=. sequelize db:migrate",
-    "db:reset": "cross-env NODE_PATH=. sequelize db:migrate:undo:all; cross-env NODE_PATH=. sequelize db:migrate",
-    "db:revert": "cross-env NODE_PATH=. sequelize db:migrate:undo",
-    "db:revert:all": "cross-env NODE_PATH=. sequelize db:migrate:undo:all",
-    "db:seed": "cross-env NODE_PATH=. sequelize db:seed:all"
+    "start:http": "nodemon",
+    "start:prod:http": "nodemon",
+    "test": "jest",
+    "test:lint": "eslint ./src"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ricomonster/node-ddd.git"
+  },
+  "keywords": [
+    "node-ddd"
+  ],
+  "author": "Rico Maglayon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ricomonster/node-ddd/issues"
+  },
+  "homepage": "https://github.com/ricomonster/node-ddd#readme",
   "dependencies": {
-    "awilix": "^4.2.6",
-    "awilix-express": "^3.0.0",
-    "bcrypt": "^5.0.0",
+    "awilix": "^4.3.4",
+    "awilix-express": "^4.0.0",
     "body-parser": "^1.19.0",
-    "chai-change": "^2.1.2",
     "compression": "^1.7.4",
-    "cross-env": "^7.0.2",
-    "date-fns": "^2.16.1",
-    "dirty-chai": "^2.0.1",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.2",
     "express": "^4.17.1",
-    "http-status": "^1.4.2",
-    "jsonwebtoken": "^8.5.1",
+    "http-status": "^1.5.0",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
-    "pg": "^8.3.3",
-    "sequelize": "^6.3.5",
-    "structure": "^2.0.1"
+    "pg": "^8.6.0",
+    "sequelize": "^6.6.2",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "express-routes-catalogue": "^1.1.0",
-    "mocha": "^8.1.3",
-    "nodemon": "^2.0.4",
-    "nyc": "^15.1.0",
-    "sinon": "^9.1.0"
-  }
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.3.0",
+    "supertest": "^6.1.3"
+  },
+  "type": "commonjs"
 }

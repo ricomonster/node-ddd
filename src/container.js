@@ -1,33 +1,29 @@
 const { createContainer, Lifetime, asClass, asValue } = require('awilix');
-const { scopePerRequest } = require('awilix-express');
 
-// Configuration
-const config = require('./../config');
-
-// Infra
-const models = require('./infra/models');
+// Config
+const config = require('../config');
 
 // Interfaces
-const Server = require('./interfaces/http/Server');
+const HTTPServer = require('./interfaces/http/Server');
 
-// Start creating the container
+// Create container
 const container = createContainer();
 
-// Register manually
+// Register Defaults
 container.register({
   config: asValue(config),
-  models: asValue(models),
 
-  server: asClass(Server).singleton(),
+  httpServer: asClass(HTTPServer),
 });
 
-// Dynamically register app, infra components
+// Dynamic registration to the container
 container.loadModules(
   [
-    'app/**/*.js',
-    'infra/authentication/*.js',
-    'infra/encryption/*.js',
-    'infra/repositories/*!(BaseRepository).js',
+    // 'app/**/*.js',
+    // 'infra/authentication/*.js',
+    // 'infra/encryption/*.js',
+    // 'infra/repositories/*!(BaseRepository).js',
+    'infrastructures/*/*!(index).js',
   ],
   {
     formatName: 'camelCase',
@@ -38,11 +34,10 @@ container.loadModules(
   }
 );
 
-// Middleware
-container.register({
-  containerMiddleware: asValue(scopePerRequest(container)),
-});
-
-// console.log(container.registrations);
+// Let's show what are the registered components if APP_DEBUG is enabled.
+if (config.app.debug) {
+  const { log } = console;
+  log(container.registrations);
+}
 
 module.exports = container;
