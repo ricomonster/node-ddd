@@ -20,5 +20,5 @@ node_modules/
 .env
 env.yml
 
-# NYC
-.nyc_output
+# Coverage
+coverage/

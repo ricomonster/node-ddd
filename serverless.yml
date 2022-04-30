@@ -1,40 +1,26 @@
-service: node-ddd
+service: node-ddd-ts
+
+useDotenv: true
+frameworkVersion: '3'
+configValidationMode: error
+
 plugins:
+  - serverless-plugin-typescript
   - serverless-offline
-  - serverless-dotenv-plugin
 
 provider:
+  # AWS is not the only available provider for Serverless
   name: aws
-  runtime: nodejs12.x
-  stage: ${self:custom.stage}
-  region: ${file(env.yml):${self:custom.stage}.AWS_REGION, 'ap-southeast-1'}
-  environment:
-    NODE_PATH: ${file(env.yml):${self:custom.stage}.NODE_PATH, './:/opt/node_modules'}
-    NODE_ENV: ${file(env.yml):${self:custom.stage}.NODE_ENV, 'development'}
-  tracing:
-    apiGateway: false
-    lambda: false # Optional, can be true (true equals 'Active'), 'Active' or 'PassThrough'
-  versionFunctions: false
-  memorySize: 1024
+  region: ${env:AWS_REGION, 'ap-southeast-1'}
+
+  runtime: nodejs14.x
+  memorySize: 512 # Overwrite the default memory size. Default is 1024
 
 custom:
-  stage: ${opt:stage, 'development'}
-  env: ${file(env.yml):${self:custom.stage}}
-  layerArn: ${self:custom.env.LAYER_ARN}
   serverless-offline:
-    httpPort: ${file(env.yml):${self:custom.stage}.SLS_OFFLINE_HTTP_PORT, '3000'}
-    lambdaPort: ${file(env.yml):${self:custom.stage}.SLS_OFFLINE_LAMBDA_PORT, '3002'}
-# iamRoleStatements:
-#    - Effect: 'Allow'
-#     Action:
-#       - 'xray:PutTraceSegments'
-#       - 'xray:PutTelemetryRecords'
-#     Resource:
-#       - '*'
+    httpPort: ${env:SLS_HTTP_PORT, '3001'}
+    lambdaPort: ${env:SLS_LAMBDA_PORT, '3002'}
 
-# functions:
-#   functionName:
-#     handler: handlerPath
-
-# resources:
-#   Resources:
+functions:
+  # testing:
+  #   handler: src/interface/lambda/index.testing
